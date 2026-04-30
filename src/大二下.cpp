@@ -3121,16 +3121,254 @@
 //     return 0;
 // }
 
+// 58. https://codeforces.com/contest/2217/problem/C
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// void solve() {
+//     int n, m, a, b;
+//     std::cin >> n >> m >> a >> b;
+//     if (std::gcd(n, a) == 1 && std::gcd(m, b) == 1 && std::gcd(n, m) <= 2) {
+//         std::cout << "YES\n";
+//     } else {
+//         std::cout << "NO\n";
+//     }
+// }
+//
+// signed main() {
+//     int T;
+//     std::cin >> T;
+//     while (T--) {
+//         solve();
+//     }
+//     return 0;
+// }
 
+// 59. https://codeforces.com/contest/2217/problem/D
+// #include <bits/stdc++.h>
+//
+// void solve() {
+//     int n, k;
+//     std::cin >> n >> k;
+//     std::vector<int> a(n + 2), b(k + 2);
+//     for (int i = 1; i <= n; i++) std::cin >> a[i];
+//     for (int i = 1; i <= k; i++) std::cin >> b[i];
+//     b[k + 1] = n + 1;
+//     const int t = a[b[1]];
+//     for (int i = 1; i <= n; i++) a[i] = (a[i] != t);
+//     for (int i = n + 1; i >= 1; i--) a[i] = a[i] ^ a[i - 1];
+//     int sum = 0;
+//     for (int i = 1; i <= n + 1; i++) sum += a[i];
+//     int mx = 0;
+//     for (int i = 0; i <= k; i++) {
+//         int c = 0;
+//         for (int j = b[i] + 1; j <= b[i + 1]; j++) c += a[j];
+//         mx = std::max(mx, c);
+//     }
+//     std::cout << std::max(sum / 2, mx) << "\n";
+// }
+//
+// signed main() {
+//     int T;
+//     std::cin >> T;
+//     while (T--) {
+//         solve();
+//     }
+//     return 0;
+// }
 
+// 60. https://codeforces.com/contest/2225/problem/A
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// signed main() {
+//     int T;
+//     std::cin >> T;
+//     while (T--) {
+//         int x, y;
+//         std::cin >> x >> y;
+//         if (const int t = y / x; t >= 3) std::cout << "YES\n";
+//         else std::cout << "NO\n";
+//     }
+//     return 0;
+// }
 
+// 61. https://codeforces.com/contest/2225/problem/B
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// signed main() {
+//     int T;
+//     std::cin >> T;
+//     while (T--) {
+//         std::string s;
+//         std::cin >> s;
+//         int cnt = 0;
+//         for (int i = 0; i < s.size() - 1; i++) {
+//             if (s[i] == s[i + 1]) cnt++;
+//         }
+//         if (cnt <= 2) std::cout << "YES\n";
+//         else std::cout << "NO\n";
+//     }
+//     return 0;
+// }
 
+// 62. https://codeforces.com/problemset/problem/2225/C
+// #include <bits/stdc++.h>
+//
+// signed main() {
+//     int T;
+//     std::cin >> T;
+//     while (T--) {
+//         int n;
+//         std::cin >> n;
+//         std::vector<std::string> s(2);
+//         std::cin >> s[0] >> s[1];
+//         std::vector<int> dp(n);
+//         dp[0] = s[0][0] != s[1][0];
+//         dp[1] = std::min(dp[0] + (s[0][1] != s[1][1]), (s[0][0] != s[0][1]) + (s[1][0] != s[1][1]));
+//         for (int i = 2; i < n; i++) {
+//             dp[i] = std::min(dp[i - 1] + (s[0][i] != s[1][i]),
+//                 dp[i - 2] + (s[0][i] != s[0][i - 1]) + (s[1][i] != s[1][i - 1]));
+//         }
+//         std::cout << dp[n - 1] << "\n";
+//     }
+//     return 0;
+// }
 
+// 63. https://www.luogu.com.cn/problem/AT_abc445_e
+// #include <bits/stdc++.h>
+// #define int long long
+// constexpr int N = 1e4, mod = 998244353;
+//
+// int primes[N], cnt, vis[N];
+//
+// void euler() {
+//     for (int i = 2; i < N; i++) {
+//         if (!vis[i]) primes[cnt++] = i;
+//         for (int j = 0; primes[j] * i < N; j++) {
+//             vis[i * primes[j]] = 1;
+//             if (i % primes[j] == 0) break;
+//         }
+//     }
+// }
+//
+// struct node {
+//     int mx1 = -1, mx2 = -1;
+//     void insert(const int x) {
+//         if (x >= mx1) {
+//             mx2 = mx1;
+//             mx1 = x;
+//         } else {
+//             mx2 = std::max(mx2, x);
+//         }
+//     }
+// };
+//
+// int ksm(int a, int k, const int mo) {
+//     int res = 1;
+//     while (k) {
+//         if (k & 1) res = res * a % mo;
+//         a = a * a % mo;
+//         k >>= 1;
+//     }
+//     return res;
+// }
+//
+// int inv(const int a) {
+//     return ksm(a, mod - 2, mod);
+// }
+//
+// void solve() {
+//     std::unordered_map<int, node> mp;
+//     int n;
+//     std::cin >> n;
+//     std::vector<std::unordered_map<int, int>> mp2(n + 1);
+//     std::vector<int> a(n + 1);
+//     for (int i = 1; i <= n; i++) std::cin >> a[i];
+//     for (int i = 1; i <= n; i++) {
+//         int t = a[i];
+//         for (int j = 0; primes[j] * primes[j] <= t && j < cnt; j++) {
+//             if (t % primes[j] == 0) {
+//                 int cn = 0;
+//                 while (t % primes[j] == 0) {
+//                     cn++;
+//                     t /= primes[j];
+//                 }
+//                 mp[primes[j]].insert(cn);
+//                 mp2[i][primes[j]] = cn;
+//             }
+//         }
+//         if (t > 1) mp[t].insert(1), mp2[i][t] = 1;
+//     }
+//     int ans = 1;
+//     for (const auto& [p, no] : mp) {
+//         if (no.mx1 != -1) ans = ans * ksm(p, no.mx1, mod) % mod;
+//     }
+//     for (int i = 1; i <= n; i++) {
+//         int t = ans;
+//         for (const auto& [p, cn] : mp2[i]) {
+//             if (mp[p].mx1 == cn && mp[p].mx2 != mp[p].mx1) {
+//                 t = t * inv(ksm(p, cn, mod)) % mod;
+//                 t = t * ksm(p, std::max(mp[p].mx2, 0LL), mod) % mod;
+//             }
+//         }
+//         std::cout << t << " ";
+//     }
+//     std::cout << "\n";
+// }
+//
+// signed main() {
+//     euler();
+//     int T;
+//     std::cin >> T;
+//     while (T--) {
+//         solve();
+//     }
+//     return 0;
+// }
 
-
-
-
-
+// 64. https://atcoder.jp/contests/abc445/tasks/abc445_f
+// #include <bits/stdc++.h>
+// #define int long long
+// constexpr int inf = 1e18;
+//
+// std::vector<std::vector<int>> multi(std::vector<std::vector<int>> A, std::vector<std::vector<int>> B, int N) {
+//     std::vector<std::vector<int>> res(N + 1, std::vector<int>(N + 1, inf));
+//     for (int i = 1; i <= N; i++) {
+//         for (int j = 1; j <= N; j++) {
+//             for (int k = 1; k <= N; k++) {
+//                 res[i][j] = std::min(res[i][j], A[i][k] + B[k][j]);
+//             }
+//         }
+//     }
+//     return res;
+// }
+//
+// std::vector<std::vector<int>> ksm(std::vector<std::vector<int>> A, int K, int N) {
+//     std::vector<std::vector<int>> res(N + 1, std::vector<int>(N + 1, inf));
+//     for (int i = 1; i <= N; i++) res[i][i] = 0;
+//     while (K) {
+//         if (K & 1) res = multi(res, A, N);
+//         A = multi(A, A, N);
+//         K >>= 1;
+//     }
+//     return res;
+// }
+//
+// signed main() {
+//     int n, k;
+//     std::cin >> n >> k;
+//     std::vector<std::vector<int>> a(n + 1, std::vector<int>(n + 1));
+//     for (int i = 1; i <= n; i++)
+//         for (int j = 1; j <= n; j++)
+//             std::cin >> a[i][j];
+//     a = ksm(a, k, n);
+//     for (int i = 1; i <= n; i++) {
+//         std::cout << a[i][i] << "\n";
+//     }
+//     return 0;
+// }
 
 
 
