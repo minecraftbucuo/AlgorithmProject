@@ -3370,6 +3370,293 @@
 //     return 0;
 // }
 
+// 65. https://www.luogu.com.cn/problem/AT_abc444_e
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// signed main() {
+//     int n, d;
+//     std::cin >> n >> d;
+//     std::vector<int> a(n + 1);
+//     for (int i = 1; i <= n; i++) std::cin >> a[i];
+//     std::multiset<int> s;
+//     int l = 1, r;
+//     int ans = 0;
+//     auto get_mx = [&](const int x) -> int {
+//         int mx = 1e18;
+//         auto it = s.lower_bound(a[r]);
+//         if (it != s.end()) mx = std::min(mx, std::abs(a[r] - *it));
+//         if (it != s.begin()) {
+//             --it;
+//             mx = std::min(mx, std::abs(a[r] - *it));
+//         }
+//         return mx;
+//     };
+//     for (r = 1; r <= n; r++) {
+//         int mx = get_mx(a[r]);
+//         if (mx >= d) ans += r - l + 1;
+//         else {
+//             do {
+//                 s.erase(s.find(a[l++]));
+//             } while (get_mx(a[r]) < d);
+//             ans += r - l + 1;
+//         }
+//         s.insert(a[r]);
+//     }
+//     std::cout << ans << "\n";
+//     return 0;
+// }
+
+// 66. https://codeforces.com/contest/2225/problem/D
+// #include <bits/stdc++.h>
+// #define int long long
+// constexpr int mod = 998244353;
+//
+// int calc(const int r, const int m) {
+//     if (r < m) return 0;
+//     return (1 + (r - m) / 4) % mod;
+// }
+//
+// signed main() {
+//     int T;
+//     std::cin >> T;
+//     while (T--) {
+//         int n, x;
+//         std::cin >> n >> x;
+//         int ans = 0;
+//         for (int i = 1; i <= 3; i += 2) {
+//             ans += (calc(x - 1, i) + (i == 3)) * (calc(n, i) - calc(x - 1, i) + mod);
+//             ans %= mod;
+//         }
+//         std::cout << ans << "\n";
+//     }
+//     return 0;
+// }
+
+// 67. https://www.luogu.com.cn/problem/CF2227F
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// class BitTree {
+// public:
+//     explicit BitTree(const int n) : a(n + 1), cnt(n + 1) { }
+//
+//     void add(const int p, const int x) {
+//         for (int i = p; i < a.size(); i += i & -i) {
+//             cnt[i] += 1;
+//             a[i] += x;
+//         }
+//     }
+//
+//     [[nodiscard]] int sum_cnt(const int x) const {
+//         int res = 0;
+//         for (int i = x; i > 0; i -= i & -i) {
+//             res += cnt[i];
+//         }
+//         return res;
+//     }
+//
+//     [[nodiscard]] int sum(const int x) const {
+//         int res = 0;
+//         for (int i = x; i > 0; i -= i & -i) {
+//             res += a[i];
+//         }
+//         return res;
+//     }
+//
+//     [[nodiscard]] int sum(const int l, const int r) const {
+//         if (r < l) return 0;
+//         return sum(r) - sum(l - 1);
+//     }
+//
+//     [[nodiscard]] int sum_cnt(const int l, const int r) const {
+//         if (r < l) return 0;
+//         return sum_cnt(r) - sum_cnt(l - 1);
+//     }
+//
+// private:
+//     std::vector<int> a;
+//     std::vector<int> cnt;
+// };
+//
+// signed main() {
+//     int T;
+//     std::cin >> T;
+//     while (T--) {
+//         int n;
+//         std::cin >> n;
+//         std::vector<int> a(n + 1);
+//         for (int i = 1; i <= n; i++) std::cin >> a[i];
+//         BitTree bit_tree(n);
+//         std::vector<int> b(n + 1), c(n + 1);
+//         int ans = 0;
+//         for (int i = 1; i <= n; i++) {
+//             int cnt = bit_tree.sum_cnt(a[i], n);
+//             int sum = bit_tree.sum(a[i], n);
+//             b[i] = sum - cnt * a[i];
+//             ans += b[i];
+//             cnt = bit_tree.sum_cnt(a[i] - 1, n);
+//             sum = bit_tree.sum(a[i] - 1, n);
+//             c[i] = sum - cnt * (a[i] - 1);
+//             bit_tree.add(a[i], a[i]);
+//         }
+//         BitTree bit_tree2(n);
+//         const int base = ans;
+//         for (int i = n; i >= 1; i--) {
+//             ans = std::max(ans, base - b[i] + c[i] - bit_tree2.sum_cnt(0, a[i] - 1));
+//             bit_tree2.add(a[i], 1);
+//         }
+//         std::cout << ans << "\n";
+//     }
+//     return 0;
+// }
+
+// 68. https://www.luogu.com.cn/problem/AT_abc443_f
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// void solve() {
+//     int n;
+//     std::cin >> n;
+//     if (n % 10 == 0) {
+//         std::cout << -1 << "\n";
+//         return;
+//     }
+//     if (n < 10) {
+//         std::cout << n << "\n";
+//         return;
+//     }
+//     std::vector vis(n, std::vector<bool>(10));
+//     std::queue<std::pair<int, int>> q;
+//     std::vector pre(n, std::vector<std::pair<int, int>>(10));
+//     for (int i = 1; i < 10; ++i) {
+//         vis[i][i] = true;
+//         q.emplace(i, i);
+//         pre[i][i] = {-1, -1};
+//     }
+//     while (!q.empty()) {
+//         const auto [mod, ed] = q.front();
+//         q.pop();
+//         for (int i = ed; i < 10; i++) {
+//             const int m = (10 * mod + i) % n;
+//             if (m == 0) {
+//                 std::string ans = std::to_string(i);
+//                 int cur_mod = mod, cur_ed = ed;
+//                 while (cur_ed != -1) {
+//                     ans += std::to_string(cur_ed);
+//                     const int t = cur_mod;
+//                     cur_mod = pre[cur_mod][cur_ed].first;
+//                     cur_ed = pre[t][cur_ed].second;
+//                 }
+//                 std::reverse(ans.begin(), ans.end());
+//                 std::cout << ans << "\n";
+//                 return;
+//             }
+//             if (!vis[m][i]) {
+//                 vis[m][i] = true;
+//                 q.emplace(m, i);
+//                 pre[m][i] = {mod, ed};
+//             }
+//         }
+//     }
+//     std::cout << -1 << "\n";
+// }
+//
+// signed main() {
+//     solve();
+//     return 0;
+// }
+
+// 69. https://www.luogu.com.cn/problem/AT_abc443_e
+// #include <bits/stdc++.h>
+//
+// void solve() {
+//     int n, c;
+//     std::cin >> n >> c;
+//     std::vector mp(n + 1, std::vector<char>(n + 1));
+//     std::vector vis(n + 1, std::vector<int>(n + 1));
+//     std::vector ok(n + 1, std::vector<bool>(n + 1));
+//     for (int i = 1; i <= n; i++)
+//         for (int j = 1; j <= n; j++)
+//             std::cin >> mp[i][j];
+//     for (int i = 1; i <= n; i++) {
+//         int j = n;
+//         while (j >= 1 && mp[j][i] == '.') j--;
+//         ok[j][i] = true;
+//     }
+//     std::queue<std::pair<int, int>> q;
+//     q.emplace(n, c);
+//     while (!q.empty()) {
+//         const auto [x, y] = q.front();
+//         q.pop();
+//         if (mp[x][y] == '#') {
+//             int j = x - 1;
+//             while (j >= 1 && mp[j][y] == '.') j--;
+//             ok[j][y] = true;
+//         }
+//         for (int i = -1; i <= 1; ++i) {
+//             int nx = x - 1, ny = y + i;
+//             if (ny < 1 || ny > n) continue;
+//             if (vis[nx][ny]) continue;
+//             if (mp[nx][ny] == '#' && !ok[nx][ny]) continue;
+//             vis[nx][ny] = 1;
+//             if (nx == 1) continue;
+//             q.emplace(nx, ny);
+//         }
+//         if (mp[x][y] == '#' && mp[x - 1][y] == '#' && !vis[x - 1][y]) {
+//             vis[x - 1][y] = 1;
+//             if (x != 2) q.emplace(x - 1, y);
+//         }
+//     }
+//     for (int i = 1; i <= n; i++) std::cout << vis[1][i];
+//     std::cout << "\n";
+// }
+//
+// int main() {
+//     int T;
+//     std::cin >> T;
+//     while (T--) {
+//         solve();
+//     }
+//     return 0;
+// }
+
+// 70. https://codeforces.com/contest/2227/problem/E
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// signed main() {
+//     int T;
+//     std::cin >> T;
+//     while (T--) {
+//         int n;
+//         std::cin >> n;
+//         std::vector<int> a(n + 1);
+//         for (int i = 1; i <= n; i++) std::cin >> a[i];
+//         std::vector<int> mi(n + 1);
+//         mi[n] = a[n];
+//         for (int i = n - 1; i >= 1; i--) mi[i] = std::min(mi[i + 1], a[i]);
+//         int ans = 0;
+//         for (int i = 1; i <= n; i++) ans += a[i] - mi[i];
+//         int t = ans;
+//         std::vector<int> l(n + 1);
+//         std::stack<int> stk;
+//         stk.push(0);
+//         for (int i = 1; i <= n; i++) {
+//             while (a[stk.top()] >= a[i]) stk.pop();
+//             l[i] = stk.top();
+//             stk.push(i);
+//         }
+//         for (int i = 1; i <= n; i++) {
+//             if (a[i] == mi[i]) {
+//                 ans = std::max(ans, t + i - 1 - l[i]);
+//             }
+//         }
+//         std::cout << ans << "\n";
+//     }
+//     return 0;
+// }
+
 
 
 

@@ -168,221 +168,343 @@
 // 如下实现是C++的版本，C++版本和java版本逻辑完全一样
 // 提交如下代码，可以通过所有测试用例
 
+// #include <iostream>
+// #include <vector>
+// #include <algorithm>
+// #include <cmath>
+// #include <climits>
+// #include <cstring>
+//
+// using namespace std;
+//
+// const double ALPHA = 0.7;
+// const int MAXN = 100001;
+// int head = 0;
+// int cnt = 0;
+// int key[MAXN];
+// int key_count[MAXN];
+// int ls[MAXN];
+// int rs[MAXN];
+// int siz[MAXN];
+// int diff[MAXN];
+// int collect[MAXN];
+// int ci;
+// int top;
+// int father;
+// int side;
+//
+// int init(int num) {
+//     key[++cnt] = num;
+//     ls[cnt] = rs[cnt] = 0;
+//     key_count[cnt] = siz[cnt] = diff[cnt] = 1;
+//     return cnt;
+// }
+//
+// void up(int i) {
+//     siz[i] = siz[ls[i]] + siz[rs[i]] + key_count[i];
+//     diff[i] = diff[ls[i]] + diff[rs[i]] + (key_count[i] > 0 ? 1 : 0);
+// }
+//
+// void inorder(int i) {
+//     if (i != 0) {
+//         inorder(ls[i]);
+//         if (key_count[i] > 0) {
+//             collect[++ci] = i;
+//         }
+//         inorder(rs[i]);
+//     }
+// }
+//
+// int build(int l, int r) {
+//     if (l > r) {
+//         return 0;
+//     }
+//     int m = (l + r) / 2;
+//     int h = collect[m];
+//     ls[h] = build(l, m - 1);
+//     rs[h] = build(m + 1, r);
+//     up(h);
+//     return h;
+// }
+//
+// void rebuild() {
+//     if (top != 0) {
+//         ci = 0;
+//         inorder(top);
+//         if (ci > 0) {
+//             if (father == 0) {
+//                 head = build(1, ci);
+//             } else if (side == 1) {
+//                 ls[father] = build(1, ci);
+//             } else {
+//                 rs[father] = build(1, ci);
+//             }
+//         }
+//     }
+// }
+//
+// bool balance(int i) {
+//     return ALPHA * diff[i] >= max(diff[ls[i]], diff[rs[i]]);
+// }
+//
+// void add(int i, int f, int s, int num) {
+//     if (i == 0) {
+//         if (f == 0) {
+//             head = init(num);
+//         } else if (s == 1) {
+//             ls[f] = init(num);
+//         } else {
+//             rs[f] = init(num);
+//         }
+//     } else {
+//         if (key[i] == num) {
+//             key_count[i]++;
+//         } else if (key[i] > num) {
+//             add(ls[i], i, 1, num);
+//         } else {
+//             add(rs[i], i, 2, num);
+//         }
+//         up(i);
+//         if (!balance(i)) {
+//             top = i;
+//             father = f;
+//             side = s;
+//         }
+//     }
+// }
+//
+// void add(int num) {
+//     top = father = side = 0;
+//     add(head, 0, 0, num);
+//     rebuild();
+// }
+//
+// int small(int i, int num) {
+//     if (i == 0) {
+//         return 0;
+//     }
+//     if (key[i] >= num) {
+//         return small(ls[i], num);
+//     } else {
+//         return siz[ls[i]] + key_count[i] + small(rs[i], num);
+//     }
+// }
+//
+// int getRank(int num) {
+//     return small(head, num) + 1;
+// }
+//
+// int index(int i, int x) {
+//     if (siz[ls[i]] >= x) {
+//         return index(ls[i], x);
+//     } else if (siz[ls[i]] + key_count[i] < x) {
+//         return index(rs[i], x - siz[ls[i]] - key_count[i]);
+//     }
+//     return key[i];
+// }
+//
+// int index(int x) {
+//     return index(head, x);
+// }
+//
+// int pre(int num) {
+//     int kth = getRank(num);
+//     if (kth == 1) {
+//         return INT_MIN;
+//     } else {
+//         return index(kth - 1);
+//     }
+// }
+//
+// int post(int num) {
+//     int kth = getRank(num + 1);
+//     if (kth == siz[head] + 1) {
+//         return INT_MAX;
+//     } else {
+//         return index(kth);
+//     }
+// }
+//
+// void remove(int i, int f, int s, int num) {
+//     if (key[i] == num) {
+//         key_count[i]--;
+//     } else if (key[i] > num) {
+//         remove(ls[i], i, 1, num);
+//     } else {
+//         remove(rs[i], i, 2, num);
+//     }
+//     up(i);
+//     if (!balance(i)) {
+//         top = i;
+//         father = f;
+//         side = s;
+//     }
+// }
+//
+// void remove(int num) {
+//     if (getRank(num) != getRank(num + 1)) {
+//         top = father = side = 0;
+//         remove(head, 0, 0, num);
+//         rebuild();
+//     }
+// }
+//
+// void clear() {
+//     memset(key, 0, sizeof(key));
+//     memset(key_count, 0, sizeof(key_count));
+//     memset(ls, 0, sizeof(ls));
+//     memset(rs, 0, sizeof(rs));
+//     memset(siz, 0, sizeof(siz));
+//     memset(diff, 0, sizeof(diff));
+//     cnt = 0;
+//     head = 0;
+// }
+//
+// int main() {
+//     ios::sync_with_stdio(false);
+//     cin.tie(nullptr);
+//     int n;
+//     cin >> n;
+//     for (int i = 1; i <= n; i++) {
+//         int op, x;
+//         cin >> op >> x;
+//         if (op == 1) {
+//             add(x);
+//         } else if (op == 2) {
+//             remove(x);
+//         } else if (op == 3) {
+//             cout << getRank(x) << "\n";
+//         } else if (op == 4) {
+//             cout << index(x) << "\n";
+//         } else if (op == 5) {
+//             cout << pre(x) << "\n";
+//         } else {
+//             cout << post(x) << "\n";
+//         }
+//     }
+//     clear();
+//     return 0;
+// }
+
+// 2026西安邀请赛 C AI
 #include <iostream>
+#include <string>
 #include <vector>
 #include <algorithm>
-#include <cmath>
-#include <climits>
-#include <cstring>
 
 using namespace std;
 
-const double ALPHA = 0.7;
-const int MAXN = 100001;
-int head = 0;
-int cnt = 0;
-int key[MAXN];
-int key_count[MAXN];
-int ls[MAXN];
-int rs[MAXN];
-int siz[MAXN];
-int diff[MAXN];
-int collect[MAXN];
-int ci;
-int top;
-int father;
-int side;
+const int INF = 1e9;
+// 由于N<=5000，使用 short 以减少内存占用 (5000*5000*2 bytes ≈ 50MB)
+short memo[5005][5005];
 
-int init(int num) {
-    key[++cnt] = num;
-    ls[cnt] = rs[cnt] = 0;
-    key_count[cnt] = siz[cnt] = diff[cnt] = 1;
-    return cnt;
-}
+// 预处理数组：记录指定要求的最早/最晚块的边界位置
+int L1[5005], L2[5005], R1[5005], R2[5005];
+int nxt[5005][2], prv[5005][2];
 
-void up(int i) {
-    siz[i] = siz[ls[i]] + siz[rs[i]] + key_count[i];
-    diff[i] = diff[ls[i]] + diff[rs[i]] + (key_count[i] > 0 ? 1 : 0);
-}
+int solve_dp(int l, int r) {
+    if (l > r) return 0;
+    if (memo[l][r] != -1) return memo[l][r];
 
-void inorder(int i) {
-    if (i != 0) {
-        inorder(ls[i]);
-        if (key_count[i] > 0) {
-            collect[++ci] = i;
-        }
-        inorder(rs[i]);
+    int ans = 0;
+
+    // 尝试策略 1：左侧匹配 ()，右侧匹配 )(
+    int p2 = L1[l];
+    int q2 = R1[r];
+    if (p2 != INF && q2 != -INF && p2 < q2) {
+        ans = max(ans, 4 + solve_dp(p2 + 1, q2 - 1));
     }
-}
 
-int build(int l, int r) {
-    if (l > r) {
-        return 0;
+    // 尝试策略 2：左侧匹配 )(，右侧匹配 ()
+    p2 = L2[l];
+    q2 = R2[r];
+    if (p2 != INF && q2 != -INF && p2 < q2) {
+        ans = max(ans, 4 + solve_dp(p2 + 1, q2 - 1));
     }
-    int m = (l + r) / 2;
-    int h = collect[m];
-    ls[h] = build(l, m - 1);
-    rs[h] = build(m + 1, r);
-    up(h);
-    return h;
+
+    return memo[l][r] = ans;
 }
 
-void rebuild() {
-    if (top != 0) {
-        ci = 0;
-        inorder(top);
-        if (ci > 0) {
-            if (father == 0) {
-                head = build(1, ci);
-            } else if (side == 1) {
-                ls[father] = build(1, ci);
-            } else {
-                rs[father] = build(1, ci);
-            }
-        }
+void solve() {
+    int n;
+    cin >> n;
+    string s;
+    cin >> s;
+
+    // 转换为 1-based index 方便处理
+    string S = " " + s;
+
+    // 预处理 nxt 数组 (找寻其后的第一个 '(' 或 ')')
+    nxt[n + 1][0] = nxt[n + 1][1] = INF;
+    for (int i = n; i >= 1; i--) {
+        nxt[i][0] = nxt[i + 1][0];
+        nxt[i][1] = nxt[i + 1][1];
+        if (S[i] == '(') nxt[i][0] = i;
+        else nxt[i][1] = i;
     }
-}
 
-bool balance(int i) {
-    return ALPHA * diff[i] >= max(diff[ls[i]], diff[rs[i]]);
-}
+    // 预处理 prv 数组 (找寻其前的第一个 '(' 或 ')')
+    prv[0][0] = prv[0][1] = -INF;
+    for (int i = 1; i <= n; i++) {
+        prv[i][0] = prv[i - 1][0];
+        prv[i][1] = prv[i - 1][1];
+        if (S[i] == '(') prv[i][0] = i;
+        else prv[i][1] = i;
+    }
 
-void add(int i, int f, int s, int num) {
-    if (i == 0) {
-        if (f == 0) {
-            head = init(num);
-        } else if (s == 1) {
-            ls[f] = init(num);
-        } else {
-            rs[f] = init(num);
-        }
-    } else {
-        if (key[i] == num) {
-            key_count[i]++;
-        } else if (key[i] > num) {
-            add(ls[i], i, 1, num);
-        } else {
-            add(rs[i], i, 2, num);
-        }
-        up(i);
-        if (!balance(i)) {
-            top = i;
-            father = f;
-            side = s;
+    // 预处理4种关键 Block 的边界
+    for (int i = 1; i <= n; i++) {
+        // L1[i]: >= i 的最早的 () 的结束位置
+        L1[i] = INF;
+        int p1 = nxt[i][0];
+        if (p1 != INF) L1[i] = nxt[p1 + 1][1];
+
+        // L2[i]: >= i 的最早的 )( 的结束位置
+        L2[i] = INF;
+        p1 = nxt[i][1];
+        if (p1 != INF) L2[i] = nxt[p1 + 1][0];
+
+        // R1[i]: <= i 的最晚的 )( 的起始位置
+        R1[i] = -INF;
+        int q1 = prv[i][0];
+        if (q1 != -INF) R1[i] = prv[q1 - 1][1];
+
+        // R2[i]: <= i 的最晚的 () 的起始位置
+        R2[i] = -INF;
+        q1 = prv[i][1];
+        if (q1 != -INF) R2[i] = prv[q1 - 1][0];
+    }
+
+    // O(N^2) 初始化当前测试用例的 DP 记忆化数组
+    for (int i = 1; i <= n; i++) {
+        for (int j = i; j <= n; j++) {
+            memo[i][j] = -1;
         }
     }
-}
 
-void add(int num) {
-    top = father = side = 0;
-    add(head, 0, 0, num);
-    rebuild();
-}
+    // 寻找最外层的 '(' 和 ')'
+    int first_open = nxt[1][0];
+    int last_close = prv[n][1];
 
-int small(int i, int num) {
-    if (i == 0) {
-        return 0;
-    }
-    if (key[i] >= num) {
-        return small(ls[i], num);
+    if (first_open != INF && last_close != -INF && first_open < last_close) {
+        // 长度为 最外层2个字符 + 内部最多能匹配出的 H+H^R 长度
+        cout << 2 + solve_dp(first_open + 1, last_close - 1) << "\n";
     } else {
-        return siz[ls[i]] + key_count[i] + small(rs[i], num);
+        // 无法构造出有效的包含括号的 PBBS，退化为空串
+        cout << 0 << "\n";
     }
-}
-
-int getRank(int num) {
-    return small(head, num) + 1;
-}
-
-int index(int i, int x) {
-    if (siz[ls[i]] >= x) {
-        return index(ls[i], x);
-    } else if (siz[ls[i]] + key_count[i] < x) {
-        return index(rs[i], x - siz[ls[i]] - key_count[i]);
-    }
-    return key[i];
-}
-
-int index(int x) {
-    return index(head, x);
-}
-
-int pre(int num) {
-    int kth = getRank(num);
-    if (kth == 1) {
-        return INT_MIN;
-    } else {
-        return index(kth - 1);
-    }
-}
-
-int post(int num) {
-    int kth = getRank(num + 1);
-    if (kth == siz[head] + 1) {
-        return INT_MAX;
-    } else {
-        return index(kth);
-    }
-}
-
-void remove(int i, int f, int s, int num) {
-    if (key[i] == num) {
-        key_count[i]--;
-    } else if (key[i] > num) {
-        remove(ls[i], i, 1, num);
-    } else {
-        remove(rs[i], i, 2, num);
-    }
-    up(i);
-    if (!balance(i)) {
-        top = i;
-        father = f;
-        side = s;
-    }
-}
-
-void remove(int num) {
-    if (getRank(num) != getRank(num + 1)) {
-        top = father = side = 0;
-        remove(head, 0, 0, num);
-        rebuild();
-    }
-}
-
-void clear() {
-    memset(key, 0, sizeof(key));
-    memset(key_count, 0, sizeof(key_count));
-    memset(ls, 0, sizeof(ls));
-    memset(rs, 0, sizeof(rs));
-    memset(siz, 0, sizeof(siz));
-    memset(diff, 0, sizeof(diff));
-    cnt = 0;
-    head = 0;
 }
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(nullptr);
-    int n;
-    cin >> n;
-    for (int i = 1; i <= n; i++) {
-        int op, x;
-        cin >> op >> x;
-        if (op == 1) {
-            add(x);
-        } else if (op == 2) {
-            remove(x);
-        } else if (op == 3) {
-            cout << getRank(x) << "\n";
-        } else if (op == 4) {
-            cout << index(x) << "\n";
-        } else if (op == 5) {
-            cout << pre(x) << "\n";
-        } else {
-            cout << post(x) << "\n";
+    // 解除与 C 标准 I/O 的同步，提高执行速度
+    ios_base::sync_with_stdio(false);
+    cin.tie(NULL);
+
+    int t;
+    if (cin >> t) {
+        while (t--) {
+            solve();
         }
     }
-    clear();
     return 0;
 }
-
