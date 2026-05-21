@@ -3657,6 +3657,493 @@
 //     return 0;
 // }
 
+// 71. https://qoj.ac/contest/3758/problem/18273?locale=zh-cn 南昌2026邀请B题
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// signed main() {
+//     int T;
+//     std::cin >> T;
+//     std::unordered_map<char, int> mp = {{'R', 0}, {'Y', 1}, {'G', 2}, {'B', 3}};
+//     while (T--) {
+//         int n;
+//         std::cin >> n;
+//         n *= 4;
+//         std::vector<std::pair<int, char>> a(n + 1);
+//         for (int i = 1; i <= n; i++) {
+//             std::cin >> a[i].first >> a[i].second;
+//         }
+//         std::string ans = "YES";
+//         for (int i = 1; i <= n; i++) {
+//             for (int j = i + 1; j <= n; j++) {
+//                 if (a[i].second == a[j].second) continue;
+//                 if (mp[a[i].second] > mp[a[j].second] && a[i].first != a[j].first) {
+//                     ans = "NO";
+//                     break;
+//                 }
+//             }
+//             if (ans == "NO") break;
+//         }
+//         std::cout << ans << "\n";
+//     }
+//     return 0;
+// }
+
+// 72. https://qoj.ac/contest/3758/problem/18279   2026南昌邀请赛H
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// signed main() {
+//     int T;
+//     std::cin >> T;
+//     while (T--) {
+//         int n, k;
+//         std::cin >> n >> k;
+//         std::vector<int> a(n + 1);
+//         for (int i = 1; i <= n; i++) std::cin >> a[i];
+//         bool xian_win = false;
+//         for (int i = 1; i <= k; i <<= 1) {
+//             int sum = 0;
+//             for (int j = 1; j <= n; j++) {
+//                 sum += a[j] / i;
+//             }
+//             if (sum & 1) {
+//                 xian_win = true;
+//                 break;
+//             }
+//         }
+//         if (xian_win) std::cout << "Alice\n";
+//         else std::cout << "Bob\n";
+//     }
+//     return 0;
+// }
+
+// 73. https://qoj.ac/contest/3758/problem/18280   2026南昌邀请赛I
+// #include <bits/stdc++.h>
+// #define int long long
+// constexpr int inf = 1e18;
+//
+// signed main() {
+//     int l, d, t0, t1, t2;
+//     std::cin >> l >> d >> t0 >> t1 >> t2;
+//     std::string s;
+//     std::cin >> s;
+//     std::vector<int> a(l + 1);
+//     for (int i = 1; i <= l; i++) {
+//         if (s[i - 1] == '0') a[i] = t0;
+//         else if (s[i - 1] == '1') a[i] = t1;
+//         else a[i] = t2;
+//     }
+//     std::vector dp(l + 1, std::vector<int>(4, inf));
+//     dp[0][0] = 0;
+//     for (int i = 1; i <= l; i++) {
+//         for (int j = 0; j <= 3; j++) {
+//             dp[i][j] = std::min(dp[i][j], dp[i - 1][j] + a[i]);
+//             if (i - d >= 0 && j) {
+//                 dp[i][j] = std::min(dp[i][j], dp[i -d][j - 1]);
+//             }
+//         }
+//     }
+//     int ans = std::min({dp[l][0], dp[l][1], dp[l][2], dp[l][3]});
+//     for (int i = l - d; i <= l; i++) {
+//         ans = std::min({ans, dp[i][0], dp[i][1], dp[i][2]});
+//     }
+//     std::cout << ans << "\n";
+//     return 0;
+// }
+
+// 74. https://qoj.ac/contest/3758/problem/18274 2026南昌邀请赛C
+// #include <bits/stdc++.h>
+// #define int long long
+// constexpr int inf = 1e9;
+//
+// struct Mat {
+//     int n;
+//     std::vector<std::vector<int>> a;
+//     explicit Mat(const int _n) : n(_n), a(n + 1, std::vector<int>(n + 1, inf)) {}
+//     Mat operator*(const Mat& mat) const {
+//         Mat res(n);
+//         for (int i = 1; i <= n; i++) {
+//             for (int j = 1; j <= n; j++) {
+//                 for (int k = 1; k <= n; k++) {
+//                      res.a[i][j] = std::min(res.a[i][j], std::max(a[i][k], mat.a[k][j]));
+//                 }
+//             }
+//         }
+//         return res;
+//     }
+//
+//     [[nodiscard]] Mat pow(int k) const {
+//         Mat res(n);
+//         Mat x = *this;
+//         for (int i = 1; i <= n; i++) res.a[i][i] = 0;
+//         while (k) {
+//             if (k & 1) res = res * x;
+//             x = x * x;
+//             k >>= 1;
+//         }
+//         return res;
+//     }
+// };
+//
+// signed main() {
+//     std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
+//     int n, m;
+//     std::cin >> n >> m;
+//     Mat a(n);
+//     for (int i = 1, u, v; i <= m; i++) {
+//         std::cin >> u >> v;
+//         a.a[u][v] = 0;
+//     }
+//     int k;
+//     std::cin >> k;
+//     for (int i = 1, u, v; i <= k; i++) {
+//         std::cin >> u >> v;
+//         a.a[u][v] = std::min(a.a[u][v], i);
+//     }
+//     int q, w;
+//     std::cin >> q >> w;
+//     const auto res = a.pow(w);
+//     for (int i = 1; i <= q; i++) {
+//         int s, t;
+//         std::cin >> s >> t;
+//         if (res.a[s][t] < inf) std::cout << res.a[s][t] << "\n";
+//         else std::cout << "-1\n";
+//     }
+//     return 0;
+// }
+
+// 75. https://www.luogu.com.cn/problem/AT_abc440_e
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// struct node {
+//     int cnt, sum, id;
+//     bool operator<(const node& other) const {
+//         return sum < other.sum;
+//     }
+// };
+//
+// signed main() {
+//     int n, k, x;
+//     std::cin >> n >> k >> x;
+//     std::vector<int> a(n + 1);
+//     for (int i = 1; i <= n; i++) std::cin >> a[i];
+//     std::sort(a.begin() + 1, a.end(), std::greater<>());
+//     const int mx = k * a[1];
+//     std::cout << mx << "\n";
+//     if (x == 1) return 0;
+//     std::priority_queue<node> q;
+//     q.push({1, mx - a[1] + a[2], 2});
+//     for (int i = 1; i < x; i++) {
+//         const auto [cnt, sum, id] = q.top();
+//         q.pop();
+//         std::cout << sum << "\n";
+//         if (cnt < k) q.push({cnt + 1, sum - a[1] + a[id], id});
+//         if (id < n) q.push({cnt, sum - a[id] + a[id + 1], id + 1});
+//     }
+//     return 0;
+// }
+
+// 76. https://qoj.ac/contest/3758/problem/18281
+// #include <bits/stdc++.h>
+// #define int long long
+// constexpr int N = 2e6 + 10;
+//
+// struct DSU {
+//     int n;
+//     std::vector<int> fa;
+//     explicit DSU(const int _n) : n(_n), fa(n + 1) {
+//         std::iota(fa.begin(), fa.end(), 0);
+//     }
+//
+//     int find(const int x) {
+//         if (x == fa[x]) return x;
+//         return fa[x] = find(fa[x]);
+//     }
+// };
+//
+// signed main() {
+//     std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
+//     int n, q;
+//     std::cin >> n >> q;
+//     std::vector<int> a(n + 1);
+//     std::vector<int> vis(N);
+//     DSU dsu(N);
+//     std::vector<int> node(N), fa(N), deep(N);
+//     std::vector up(N, std::vector<int>(22));
+//     for (int i = 1; i <= n; i++) std::cin >> a[i], vis[a[i]] = 1;
+//     const int mx = *std::max_element(a.begin() + 1, a.end());
+//     int cnt = mx;
+//     for (int i = mx; i >= 1; i--) {
+//         int fst = -1;
+//         for (int j = i; j <= mx; j += i) {
+//             if (!vis[j]) continue;
+//             if (fst == -1) fst = j;
+//             else {
+//                 const int fax = dsu.find(fst);
+//                 if (const int fay = dsu.find(j); fax != fay) {
+//                     ++cnt;
+//                     dsu.fa[fax] = cnt;
+//                     dsu.fa[fay] = cnt;
+//                     node[cnt] = i;
+//                     fa[fax] = cnt;
+//                     fa[fay] = cnt;
+//                 }
+//             }
+//         }
+//     }
+//     for (int i = cnt; i >= 1; i--) {
+//         if (fa[i] == 0) {
+//             up[i][0] = i;
+//             deep[i] = 0;
+//         } else {
+//             deep[i] = deep[fa[i]] + 1;
+//             up[i][0] = fa[i];
+//         }
+//         for (int j = 1; j <= 21; j++) {
+//             up[i][j] = up[up[i][j - 1]][j - 1];
+//         }
+//     }
+//     while (q--) {
+//         int x, y;
+//         std::cin >> x >> y;
+//         x = a[x], y = a[y];
+//         if (x == y) std::cout << x << "\n";
+//         else {
+//             if (deep[x] < deep[y]) std::swap(x, y);
+//             const int deep_delta = deep[x] - deep[y];
+//             for (int i = 0; i <= 21; i++) {
+//                 if (deep_delta >> i & 1) x = up[x][i];
+//             }
+//             int lca;
+//             if (x == y) lca = x;
+//             else {
+//                 for (int i = 21; i >= 0; i--) {
+//                     if (up[x][i] != up[y][i]) {
+//                         x = up[x][i];
+//                         y = up[y][i];
+//                     }
+//                 }
+//                 lca = up[x][0];
+//             }
+//             std::cout << node[lca] << "\n";
+//         }
+//     }
+//     return 0;
+// }
+
+// 77. https://qoj.ac/contest/3758/problem/18278  由 AI 生成
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+using namespace std;
+
+const int MAXN = 200005;
+
+struct Node {
+    int a;       // 未匹配的 ')' 数量
+    int b;       // 未匹配的 '(' 数量
+    int len;     // 区间长度
+    int ans;     // 区间内最长合法连续子串长度
+    bool is_leaf;
+    char c;
+} tree[MAXN * 4];
+
+string s;
+
+// 获取 u 节点消耗最后 k 个 '(' 后，连同前面的有效括号构成的后缀长度
+int query_suff(int u, int k) {
+    if (tree[u].is_leaf) {
+        if (tree[u].c == ')') return 0;
+        return k == 1 ? 1 : 0;
+    }
+    int lc = 2 * u, rc = 2 * u + 1;
+
+    // 如果需要的 '(' 数量比右孩子少，完全在右侧解决
+    if (k < tree[rc].b) {
+        return query_suff(rc, k);
+    }
+    // 如果相等，且右侧自带的 ')' 超出了左侧能提供的 '('，导致无法继续向左穿透
+    else if (k == tree[rc].b && tree[rc].a > tree[lc].b) {
+        return query_suff(rc, k);
+    }
+    // 向左穿透：吃满右侧，并将剩下的需求和右侧的内部需求丢给左侧
+    else {
+        return tree[rc].len + query_suff(lc, tree[rc].a + k - tree[rc].b);
+    }
+}
+
+// 获取 u 节点消耗最前 k 个 ')' 后，连同后面的有效括号构成的前缀长度
+int query_pref(int u, int k) {
+    if (tree[u].is_leaf) {
+        if (tree[u].c == '(') return 0;
+        return k == 1 ? 1 : 0;
+    }
+    int lc = 2 * u, rc = 2 * u + 1;
+
+    // 逻辑与 query_suff 完全对称
+    if (k < tree[lc].a) {
+        return query_pref(lc, k);
+    } else if (k == tree[lc].a && tree[lc].b > tree[rc].a) {
+        return query_pref(lc, k);
+    } else {
+        return tree[lc].len + query_pref(rc, tree[lc].b + k - tree[lc].a);
+    }
+}
+
+// 向上合并逻辑
+void push_up(int u) {
+    int lc = 2 * u, rc = 2 * u + 1;
+    tree[u].len = tree[lc].len + tree[rc].len;
+    tree[u].a = tree[lc].a + max(0, tree[rc].a - tree[lc].b);
+    tree[u].b = tree[rc].b + max(0, tree[lc].b - tree[rc].a);
+
+    int k = min(tree[lc].b, tree[rc].a);
+    int boundary = query_suff(lc, k) + query_pref(rc, k);
+    tree[u].ans = max({tree[lc].ans, tree[rc].ans, boundary});
+}
+
+// 建树
+void build(int u, int start, int end) {
+    if (start == end) {
+        tree[u].is_leaf = true;
+        tree[u].c = s[start];
+        tree[u].len = 1;
+        tree[u].ans = 0;
+        if (s[start] == '(') {
+            tree[u].a = 0; tree[u].b = 1;
+        } else {
+            tree[u].a = 1; tree[u].b = 0;
+        }
+        return;
+    }
+    int mid = start + (end - start) / 2;
+    build(2 * u, start, mid);
+    build(2 * u + 1, mid + 1, end);
+    tree[u].is_leaf = false;
+    push_up(u);
+}
+
+// 单点修改翻转
+void update(int u, int start, int end, int pos) {
+    if (start == end) {
+        if (tree[u].c == '(') {
+            tree[u].c = ')';
+            tree[u].a = 1; tree[u].b = 0;
+        } else {
+            tree[u].c = '(';
+            tree[u].a = 0; tree[u].b = 1;
+        }
+        return;
+    }
+    int mid = start + (end - start) / 2;
+    if (pos <= mid) update(2 * u, start, mid, pos);
+    else update(2 * u + 1, mid + 1, end, pos);
+    push_up(u);
+}
+
+// 用于收集查询覆盖到的线段树节点
+struct QueryNode {
+    int a, b, len, ans, node_idx;
+};
+vector<QueryNode> q_nodes;
+
+// 收集区间
+void collect_nodes(int u, int start, int end, int l, int r) {
+    if (l <= start && end <= r) {
+        q_nodes.push_back({tree[u].a, tree[u].b, tree[u].len, tree[u].ans, u});
+        return;
+    }
+    int mid = start + (end - start) / 2;
+    if (l <= mid) collect_nodes(2 * u, start, mid, l, r);
+    if (r > mid) collect_nodes(2 * u + 1, mid + 1, end, l, r);
+}
+
+// 供区间查询使用的状态记录
+struct State {
+    int a, b, len, ans;
+};
+
+// 严谨的区间查询与合并
+int solve_query(int l, int r, int n) {
+    q_nodes.clear();
+    collect_nodes(1, 1, n, l, r);
+    if (q_nodes.empty()) return 0;
+
+    // 动态维护前缀的状态
+    vector<State> prefs(q_nodes.size());
+    prefs[0] = {q_nodes[0].a, q_nodes[0].b, q_nodes[0].len, q_nodes[0].ans};
+
+    for (size_t i = 1; i < q_nodes.size(); i++) {
+        int a1 = prefs[i-1].a, b1 = prefs[i-1].b;
+        int a2 = q_nodes[i].a, b2 = q_nodes[i].b;
+
+        prefs[i].a = a1 + max(0, a2 - b1);
+        prefs[i].b = b2 + max(0, b1 - a2);
+        prefs[i].len = prefs[i-1].len + q_nodes[i].len;
+
+        int k = min(b1, a2);
+
+        // 按照与 query_suff 完全相同的阻断逻辑计算左侧后缀长度
+        int suff = 0;
+        int cur_k = k;
+        for (int j = i - 1; j >= 0; j--) {
+            int u = q_nodes[j].node_idx;
+            int left_b = (j > 0) ? prefs[j-1].b : 0;
+
+            if (cur_k < tree[u].b) {
+                suff += query_suff(u, cur_k);
+                break;
+            } else if (cur_k == tree[u].b && tree[u].a > left_b) {
+                suff += query_suff(u, cur_k);
+                break;
+            } else {
+                suff += tree[u].len;
+                cur_k = tree[u].a + cur_k - tree[u].b;
+            }
+        }
+
+        int pref = query_pref(q_nodes[i].node_idx, k);
+        prefs[i].ans = max({prefs[i-1].ans, q_nodes[i].ans, suff + pref});
+    }
+
+    return prefs.back().ans;
+}
+
+int main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    int n, q;
+    if (!(cin >> n >> q)) return 0;
+
+    cin >> s;
+    s = " " + s; // 1-based index mapping
+
+    build(1, 1, n);
+
+    while (q--) {
+        int op;
+        cin >> op;
+        if (op == 1) {
+            int k;
+            cin >> k;
+            update(1, 1, n, k);
+        } else if (op == 2) {
+            int l, r;
+            cin >> l >> r;
+            cout << solve_query(l, r, n) << "\n";
+        }
+    }
+
+    return 0;
+}
+
+
+
 
 
 
