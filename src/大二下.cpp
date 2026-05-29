@@ -4246,4 +4246,117 @@
 //     return 0;
 // }
 
+// 80. https://www.luogu.com.cn/problem/CF1681F
+// #include <bits/stdc++.h>
+//
+// signed main() {
+//     std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
+//     int n;
+//     std::cin >> n;
+//     std::vector g(n + 1, std::vector<std::pair<int, int>>());
+//     for (int i = 1; i < n; ++i) {
+//         int u, v, w;
+//         std::cin >> u >> v >> w;
+//         g[u].emplace_back(v, w);
+//         g[v].emplace_back(u, w);
+//     }
+//     std::vector<int> siz(n + 1);
+//     auto dfs1 = [&](auto&& self, int u, int fa) -> void {
+//         siz[u] = 1;
+//         for (auto& [v, w] : g[u]) {
+//             if (v == fa) continue;
+//             self(self, v, u);
+//             siz[u] += siz[v];
+//         }
+//     };
+//     dfs1(dfs1, 1, 0);
+//     std::vector<int> siz2(n + 1), vis(n + 1), co(n + 1);
+//     std::vector<int> up(n + 1), root(n + 1);
+//     auto dfs2 = [&](auto&& self, int u, int fa) -> void {
+//         for (auto& [v, w] : g[u]) {
+//             if (v == fa) continue;
+//             if (vis[w] == 0) {
+//                 root[w] += siz[v];
+//                 vis[w] = v;
+//                 co[v] = w;
+//                 self(self, v, u);
+//                 vis[w] = 0;
+//             } else {
+//                 up[v] = vis[w];
+//                 siz2[up[v]] += siz[v];
+//                 vis[w] = v;
+//                 self(self, v, u);
+//                 vis[w] = up[v];
+//             }
+//         }
+//     };
+//     dfs2(dfs2, 1, 0);
+//     long long ans = 0;
+//     for (int i = 2; i <= n; i++) {
+//         if (up[i] == 0) ans += 1LL * (n - root[co[i]]) * (siz[i] - siz2[i]);
+//         else ans += 1LL * (siz[up[i]] - siz2[up[i]]) * (siz[i] - siz2[i]);
+//     }
+//     std::cout << ans << "\n";
+//     return 0;
+// }
+
+// 81. https://www.luogu.com.cn/problem/CF981E
+// #include <bits/stdc++.h>
+// constexpr int N = 10002;
+//
+// struct node {
+//     int l{}, r{};
+//     std::vector<int> val;
+// } tr[N << 2];
+//
+// std::bitset<N> ans;
+//
+// void build(int u, int l, int r) {
+//     tr[u] = {l, r};
+//     if (l == r) return;
+//     const int mid = (l + r) >> 1;
+//     build(u << 1, l, mid);
+//     build(u << 1 | 1, mid + 1, r);
+// }
+//
+// void modify(int u, int l, int r, int x) {
+//     if (l <= tr[u].l && tr[u].r <= r) {
+//         tr[u].val.emplace_back(x);
+//         return;
+//     }
+//     const int mid = (tr[u].l + tr[u].r) >> 1;
+//     if (l <= mid) modify(u << 1, l, r, x);
+//     if (r > mid) modify(u << 1 | 1, l, r, x);
+// }
+//
+// int main() {
+//     std::ios_base::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
+//     int n, q;
+//     std::cin >> n >> q;
+//     build(1, 1, n);
+//     while (q--) {
+//         int l, r, x;
+//         std::cin >> l >> r >> x;
+//         modify(1, l, r, x);
+//     }
+//     ans[0] = true;
+//     auto calc = [&](auto&& self, int u, std::bitset<N> bit) -> void {
+//         for (const int i : tr[u].val) bit |= (bit << i);
+//         if (tr[u].l == tr[u].r) {
+//             ans |= bit;
+//             return;
+//         }
+//         self(self, u << 1, bit);
+//         self(self, u << 1 | 1, bit);
+//     };
+//     calc(calc, 1, ans);
+//     std::vector<int> a;
+//     for (int i = 1; i <= n; i++) {
+//         if (ans[i]) a.emplace_back(i);
+//     }
+//     std::cout << a.size() << "\n";
+//     for (const int i : a) std::cout << i << " ";
+//     return 0;
+// }
+
 
