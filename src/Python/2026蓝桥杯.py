@@ -166,19 +166,137 @@
 #
 # print(ans)
 
+# 6. https://www.luogu.com.cn/problem/P16814
+# a = [i for i in range(2027)]
+#
+# mod = 998244353
+#
+# def ksm(a, k):
+#     res = 1
+#     while k:
+#         if k & 1:
+#             res = res * a % mod
+#         a = a * a % mod
+#         k >>= 1
+#     return res
+#
+# for i in range(2026):
+#     ji = 1
+#     for j in range(1, 2027):
+#         ji = ji * a[j] % mod
+#
+#     for j in range(1, 2027):
+#         a[j] = ji * ksm(a[j], mod - 2)
+#
+# ans = 1
+# for i in range(1, 2027):
+#     ans = ans * a[i] % mod
+#
+# print(146753746)
 
+# 7. https://www.luogu.com.cn/problem/P16817
+# import sys
+#
+# input = lambda : sys.stdin.readline().strip()
+#
+# n = int(input())
+#
+# a = map(int, input().split())
+#
+# s = set()
+#
+# for i in a:
+#     while i % 3 == 0:
+#         s.add(i)
+#         i //= 3
+#
+# print(len(s))
 
+# 8. https://www.luogu.com.cn/problem/P16815
+# import sys
+#
+# input = lambda : sys.stdin.readline().strip()
+#
+# n = int(input())
+#
+# s = input()
+#
+# cnt = 0
+#
+# for i in range(0, n - 1):
+#     if s[i] == s[i + 1]:
+#         cnt += 1
+#
+# if s[0] == s[-1]:
+#     cnt += 1
+#
+# if cnt == 0:
+#     print(n)
+# elif cnt == 1:
+#     print(1)
+# else:
+#     print(0)
 
+# 9. https://www.luogu.com.cn/problem/P16816
+# import sys
+#
+# input = lambda : sys.stdin.readline().strip()
+#
+# n, m, k = map(int, input().split())
+#
+# a = list(map(int, input().split()))
+#
+# cur = 1
+#
+# cnt = 0
+#
+# vis = [False for _ in range(n + 1)]
+#
+# for i in a:
+#     if vis[i]:
+#         cnt += 1
+#         if cnt == k:
+#             cnt = 0
+#             while cur <= n and vis[cur]:
+#                 cur += 1
+#             if cur <= n:
+#                 vis[cur] = True
+#     else:
+#         vis[i] = True
+#
+# ans = 0
+#
+# for i in vis:
+#     if i:
+#         ans += 1
+# print(ans)
 
-
-
-
-
-
-
-
-
-
+# 10. https://www.luogu.com.cn/problem/P16819
+# import sys
+#
+# input = lambda : sys.stdin.readline().strip()
+#
+# n, k, d = map(int, input().split())
+#
+# a = [0] + list(map(int, input().split()))
+#
+# s = [0 for _ in range(n + 1)]
+#
+# a.sort()
+#
+# for i in range(1, n + 1):
+#     s[i] = s[i - 1] + a[i]
+#
+# dp = [10 ** 18 for _ in range(n + 1)]
+#
+# dp[0] = 0
+#
+# for i in range(1, n + 1):
+#     dp[i] = min(dp[i], dp[i - 1] + max(0, a[i] - d))
+#     if i - k >= 0:
+#         dp[i] = min(dp[i], dp[i - k] + s[i] - s[i - k + 1])
+#
+# print(dp[n])
 
 
 
