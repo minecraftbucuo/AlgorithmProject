@@ -473,9 +473,68 @@
 #
 # print("\n".join(map(str, res)))
 
+# 17. https://www.luogu.com.cn/problem/P9231
+# import sys
+#
+# input = lambda : sys.stdin.readline().strip()
+#
+# l, r = map(int, input().split())
+#
+# def calc(x):
+#     return (x + 1) // 2 + x // 4
+#
+# print(calc(r) - calc(l - 1))
 
+# 18. https://www.luogu.com.cn/problem/P9232
+# import sys
+#
+# input = lambda : sys.stdin.readline().strip()
+#
+# s = input()
+#
+# n = len(s)
+#
+# s = " " + s
+#
+# dp = [[0 for _ in range(n + 1)] for _ in range(n + 1)]
+#
+# for i in range(1, n):
+#     dp[i][i + 1] = 1 if s[i] > s[i + 1] else 0
+#
+# for l in range(3, n + 1):
+#     for i in range(1, n - l + 2):
+#         j = i + l - 1
+#         dp[i][j] = 1 if s[i] > s[j] else (dp[i + 1][j - 1] if s[i] == s[j] else 0)
+#
+# ans = 0
+#
+# for i in range(1, n + 1):
+#     for j in range(i + 1, n + 1):
+#         ans += dp[i][j]
+#
+# print(ans)
 
+# 19. https://www.luogu.com.cn/problem/P9236
+import sys
 
+input = lambda : sys.stdin.readline().strip()
+
+n = int(input())
+
+a = [0] + list(map(int, input().split()))
+
+ans = 0
+
+for i in range(0, 21):
+    gong = 1 << i
+    b = [0 for _ in range(n + 1)]
+    cnt = [1, 0]
+    for j in range(1, n + 1):
+        b[j] = b[j - 1] ^ (a[j] >> i & 1)
+        ans += cnt[b[j] ^ 1] * gong
+        cnt[b[j]] += 1
+
+print(ans)
 
 
 

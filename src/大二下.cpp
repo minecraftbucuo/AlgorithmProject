@@ -4359,4 +4359,199 @@
 //     return 0;
 // }
 
+// 82. https://www.luogu.com.cn/problem/P1306
+// #include <bits/stdc++.h>
+// #define int long long
+// constexpr int mod = 1e8;
+//
+// struct mat {
+//     std::array<std::array<int, 3>, 3> a{};
+//     explicit mat() {
+//         a[1][1] = a[1][2] = a[2][1] = a[2][2] = 0;
+//     }
+//     mat operator*(const mat& other) const {
+//         mat res;
+//         for (int i = 1; i <= 2; i++)
+//             for (int j = 1; j <= 2; j++)
+//                 for (int k = 1; k <= 2; k++)
+//                     res.a[i][j] = (res.a[i][j] + this->a[i][k] * other.a[k][j]) % mod;
+//         return res;
+//     }
+//
+//     [[nodiscard]] mat power(int k) const {
+//         mat res;
+//         mat x = *this;
+//         res.a[1][1] = res.a[2][2] = 1;
+//         while (k) {
+//             if (k & 1) res = x * res;
+//             x = x * x;
+//             k >>= 1;
+//         }
+//         return res;
+//     }
+// };
+//
+// signed main() {
+//     int n, m;
+//     std::cin >> n >> m;
+//     const int x = std::gcd(m, n);
+//     if (x == 1) std::cout << 1 << "\n";
+//     else {
+//         mat y;
+//         y.a[1][1] = y.a[1][2] = y.a[2][1] = 1;
+//         mat res = y.power(x - 1);
+//         std::cout << res.a[1][1] << "\n";
+//     }
+//     return 0;
+// }
+
+// 83. https://www.luogu.com.cn/problem/P1809
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// signed main() {
+//     int n;
+//     std::cin >> n;
+//     std::vector<int> a(n + 1);
+//     for (int i = 1; i <= n; i++) std::cin >> a[i];
+//     std::sort(a.begin() + 1, a.end());
+//     std::vector<int> dp(n + 1, 1e18);
+//     dp[2] = a[2];
+//     dp[3] = a[1] + a[2] + a[3];
+//     for (int i = 4; i <= n; i++) {
+//         dp[i] = std::min(dp[i], dp[i - 1] + a[1] + a[i]);
+//         dp[i] = std::min(dp[i], dp[i - 2] + a[1] + a[i] + 2 * a[2]);
+//     }
+//     std::cout << dp[n] << "\n";
+//     return 0;
+// }
+
+// 84. https://www.luogu.com.cn/problem/P8191
+// #include <bits/stdc++.h>
+// #define int long long
+//
+// struct node {
+//     int x, y, id;
+//     bool operator<(const node& other) const {
+//         return this->x < other.x;
+//     }
+// };
+//
+// struct edge {
+//     int u, v, w;
+//     bool operator<(const edge& other) const {
+//         return this->w < other.w;
+//     }
+// };
+//
+// struct DSU {
+//     std::vector<int> fa;
+//     explicit DSU(const int n) : fa(n + 1) {
+//         std::iota(fa.begin(), fa.end(), 0);
+//     }
+//
+//     int find(const int x) {
+//         if (fa[x] != x) fa[x] = find(fa[x]);
+//         return fa[x];
+//     }
+//
+//     bool is_same(const int x, const int y) {
+//         return find(x) == find(y);
+//     }
+//
+//     void merge(int x, int y) {
+//         if (is_same(x, y)) return;
+//         x = find(x), y = find(y);
+//         fa[x] = y;
+//     }
+// };
+//
+// signed main() {
+//     int n;
+//     std::cin >> n;
+//     std::vector<node> a(n + 1);
+//     for (int i = 1; i <= n; i++) {
+//         std::cin >> a[i].x >> a[i].y;
+//         a[i].id = i;
+//     }
+//     std::vector<edge> edges;
+//     std::sort(a.begin() + 1, a.end());
+//     std::vector<int> last(11);
+//     for (int i = 1; i <= n; i++) {
+//         for (int y = 0; y <= 10; y++) {
+//             if (last[y] != 0) {
+//                 int j = last[y];
+//                 int dx = a[i].x - a[j].x;
+//                 int dy = a[i].y - a[j].y;
+//                 int w = dx * dx + dy * dy;
+//                 edges.push_back({a[i].id, a[j].id, w});
+//             }
+//         }
+//         last[a[i].y] = i;
+//     }
+//     int cnt = 0;
+//     int ans = 0;
+//     DSU dsu(n);
+//     std::sort(edges.begin(), edges.end());
+//     for (const auto& [u, v, w] : edges) {
+//         if (!dsu.is_same(u, v)) {
+//             dsu.merge(u, v);
+//             ans += w;
+//             cnt++;
+//             if (cnt == n - 1) break;
+//         }
+//     }
+//     std::cout << ans << "\n";
+//     return 0;
+// }
+
+// 85. https://www.luogu.com.cn/problem/CF986A
+#include <bits/stdc++.h>
+
+signed main() {
+    std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
+    int n, m, k, s;
+    std::cin >> n >> m >> k >> s;
+    std::vector<int> a(n + 1);
+    std::vector<std::vector<int>> g(n + 1);
+    for (int i = 1; i <= n; i++) std::cin >> a[i];
+    for (int i = 0, u, v; i < m; i++) {
+        std::cin >> u >> v;
+        g[u].emplace_back(v);
+        g[v].emplace_back(u);
+    }
+    std::vector dist(n + 1, std::vector<int>(k + 1, 1e9));
+    for (int i = 1; i <= k; i++) {
+        std::queue<int> q;
+        for (int j = 1; j <= n; j++) {
+            if (a[j] == i) {
+                q.emplace(j);
+                dist[j][i] = 0;
+            }
+        }
+        while (!q.empty()) {
+            const int u = q.front();
+            q.pop();
+            for (int v : g[u]) {
+                if (dist[v][i] > dist[u][i] + 1) {
+                    dist[v][i] = dist[u][i] + 1;
+                    q.push(v);
+                }
+            }
+        }
+    }
+    for (int i = 1; i <= n; i++) {
+        std::sort(dist[i].begin(), dist[i].end());
+        int sum = 0;
+        for (int j = 0; j < s; j++) {
+            sum += dist[i][j];
+        }
+        std::cout << sum << " ";
+    }
+    return 0;
+}
+
+
+
+
 
