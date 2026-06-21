@@ -4506,52 +4506,47 @@
 // }
 
 // 85. https://www.luogu.com.cn/problem/CF986A
-#include <bits/stdc++.h>
-
-signed main() {
-    std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
-    int n, m, k, s;
-    std::cin >> n >> m >> k >> s;
-    std::vector<int> a(n + 1);
-    std::vector<std::vector<int>> g(n + 1);
-    for (int i = 1; i <= n; i++) std::cin >> a[i];
-    for (int i = 0, u, v; i < m; i++) {
-        std::cin >> u >> v;
-        g[u].emplace_back(v);
-        g[v].emplace_back(u);
-    }
-    std::vector dist(n + 1, std::vector<int>(k + 1, 1e9));
-    for (int i = 1; i <= k; i++) {
-        std::queue<int> q;
-        for (int j = 1; j <= n; j++) {
-            if (a[j] == i) {
-                q.emplace(j);
-                dist[j][i] = 0;
-            }
-        }
-        while (!q.empty()) {
-            const int u = q.front();
-            q.pop();
-            for (int v : g[u]) {
-                if (dist[v][i] > dist[u][i] + 1) {
-                    dist[v][i] = dist[u][i] + 1;
-                    q.push(v);
-                }
-            }
-        }
-    }
-    for (int i = 1; i <= n; i++) {
-        std::sort(dist[i].begin(), dist[i].end());
-        int sum = 0;
-        for (int j = 0; j < s; j++) {
-            sum += dist[i][j];
-        }
-        std::cout << sum << " ";
-    }
-    return 0;
-}
-
-
-
-
-
+// #include <bits/stdc++.h>
+//
+// signed main() {
+//     std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
+//     int n, m, k, s;
+//     std::cin >> n >> m >> k >> s;
+//     std::vector<int> a(n + 1);
+//     std::vector<std::vector<int>> g(n + 1);
+//     for (int i = 1; i <= n; i++) std::cin >> a[i];
+//     for (int i = 0, u, v; i < m; i++) {
+//         std::cin >> u >> v;
+//         g[u].emplace_back(v);
+//         g[v].emplace_back(u);
+//     }
+//     std::vector dist(n + 1, std::vector<int>(k + 1, 1e9));
+//     for (int i = 1; i <= k; i++) {
+//         std::queue<int> q;
+//         for (int j = 1; j <= n; j++) {
+//             if (a[j] == i) {
+//                 q.emplace(j);
+//                 dist[j][i] = 0;
+//             }
+//         }
+//         while (!q.empty()) {
+//             const int u = q.front();
+//             q.pop();
+//             for (int v : g[u]) {
+//                 if (dist[v][i] > dist[u][i] + 1) {
+//                     dist[v][i] = dist[u][i] + 1;
+//                     q.push(v);
+//                 }
+//             }
+//         }
+//     }
+//     for (int i = 1; i <= n; i++) {
+//         std::sort(dist[i].begin(), dist[i].end());
+//         int sum = 0;
+//         for (int j = 0; j < s; j++) {
+//             sum += dist[i][j];
+//         }
+//         std::cout << sum << " ";
+//     }
+//     return 0;
+// }
