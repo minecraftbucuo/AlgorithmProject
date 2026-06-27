@@ -4550,3 +4550,61 @@
 //     }
 //     return 0;
 // }
+
+// 86. https://www.luogu.com.cn/problem/AT_abc450_c
+#include <bits/stdc++.h>
+
+int dx[] = {0, 0, 1, -1};
+int dy[] = {1, -1, 0, 0};
+
+int main() {
+    std::ios::sync_with_stdio(false), std::cin.tie(nullptr), std::cout.tie(nullptr);
+    int h, w;
+    std::cin >> h >> w;
+    std::vector<std::vector<char>> a(h + 1, std::vector<char>(w + 1, ' '));
+    for (int i = 1; i <= h; i++) {
+        for (int j = 1; j <= w; j++) {
+            std::cin >> a[i][j];
+        }
+    }
+    int ans = 0;
+    std::vector vis(h + 1, std::vector<bool>(w + 1, false));
+    for (int i = 1; i <= h; i++) {
+        for (int j = 1; j <= w; j++) {
+            if (!vis[i][j] && a[i][j] == '.') {
+                bool is = true;
+                std::queue<std::pair<int, int>> q;
+                q.emplace(i, j);
+                while (!q.empty()) {
+                    auto [x, y] = q.front();
+                    q.pop();
+                    if (vis[x][y]) continue;
+                    vis[x][y] = true;
+                    if (x == 1 || x == h || y == 1 || y == w) is = false;
+                    for (int k = 0; k < 4; k++) {
+                        int nx = x + dx[k];
+                        int ny = y + dy[k];
+                        if (nx < 1 || nx > h || ny < 1 || ny > w) continue;
+                        if (a[nx][ny] == '#') continue;
+                        if (vis[nx][ny]) continue;
+                        q.emplace(nx, ny);
+                    }
+                }
+                if (is) ans += 1;
+            }
+        }
+    }
+    std::cout << ans << "\n";
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
